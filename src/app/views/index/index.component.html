@@ -1,0 +1,702 @@
+<nav
+  class="top-0 fixed z-50 w-full flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg bg-white shadow"
+>
+  <div
+    class="container px-4 mx-auto flex flex-wrap items-center justify-between"
+  >
+    <div
+      class="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start"
+    >
+    <img src="./assets/img/El Disfraz.png" alt="El Disfraz" style="height: 55px; width: 55px">
+    <a href="#comentarios"><img src="./assets/img/{{estrellas}}.png" alt="Calificación" style="height: 55px; width: 135px"></a>
+      <button
+        class="cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none"
+        type="button"
+        (click)="setNavbarOpen()"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <div
+
+      class="lg:flex flex-grow items-center"
+      [ngClass]="{ hidden: !navbarOpen, block: navbarOpen }"
+      id="example-navbar-warning"
+    >
+      <ul class="flex flex-col lg:flex-row list-none lg:ml-auto">
+
+        <li class="flex items-center">
+          <div class="dropdown">
+            <a class="hover:text-blueGray-500 text-blueGray-700 px-3 py-2 flex items-center text-xs uppercase font-bold dropdown-toggle"
+            type="button" data-bs-toggle="dropdown">
+            {{cat}}
+            <span class="lg:hidden inline-block ml-2"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#prod1" (click)="click_categorias('Disfraces niños')">Disfraces niños</a></li>
+            <li><a class="dropdown-item" href="#prod1" (click)="click_categorias('Disfraces mujeres')">Disfraces mujeres</a></li>
+            <li><a class="dropdown-item" href="#prod1" (click)="click_categorias('Disfraces hombres')">Disfraces hombres</a></li>
+            <li><a class="dropdown-item" href="#prod1" (click)="click_categorias('Disfraces autóctonos')">Disfraces autóctonos</a></li>
+            <li><a class="dropdown-item" href="#prod1" (click)="click_categorias('Disfraces cosplay')">Disfraces cosplay</a></li>
+            <li><a class="dropdown-item" href="#prod1" (click)="click_categorias('Accesorios')">Accesorios</a></li>
+          </ul>
+          </div>
+        </li>
+
+        <li class="flex items-center">
+          <a
+            class="hover:text-blueGray-500 text-blueGray-700 px-3 py-2 flex items-center text-xs uppercase font-bold"
+            type="button" data-bs-toggle="modal" data-bs-target="#exampleModal4" (click)="consultar_reservas()"
+          >Pedidos <i class="text-blueGray-400 fa fa-shopping-bag text-lg leading-lg"></i>
+          </a>
+        </li>
+
+        <li class="flex items-center">
+          <a
+            class="hover:text-blueGray-500 text-blueGray-700 px-3 py-2 flex items-center text-xs uppercase font-bold"
+            type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" (click)="contar()"
+          >Carrito <i class="text-blueGray-400 fa fa-shopping-cart  text-lg leading-lg"></i>
+          </a>
+        </li>
+
+        <li class="flex items-center" id="btn">
+          <button
+            class="btn btn-danger"
+            type="button" data-bs-toggle="modal" data-bs-target="#exampleModal1">
+            <i class="fas fa-sign-out-alt"></i> Login
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="dropdown" id="btn1">
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="fa fa-user"></i> {{usuario}}
+    </button>
+    <ul class="dropdown-menu" style="cursor: pointer;">
+      <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal3">Mi perfil</a></li>
+      <li><a class="dropdown-item" (click)="logout()">Logout</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Canvas Carrito -->
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title" id="offcanvasRightLabel">Carrito de compras</h3>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <h2>Detalle del carrito</h2>
+        <div class="container" style="display: inline;">
+          <label>Número de días:</label>
+          <input style="width: 100px;" type="number" id="typeNumber" class="form-control" min="1" (click)="contar()" (keyup)="contar()" [(ngModel)]="dias" name="dias"/>
+        </div>
+  <div class="offcanvas-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Talla</th>
+          <th scope="col">Precio</th>
+          <th scope="col">Subtotal</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let producto of myArray">
+          <th scope="row">{{producto.stock}}</th>
+          <td>{{producto.nombre}}</td>
+          <td>{{producto.talla}}</td>
+          <td style="text-align: center;">{{producto.precio_dia}}</td>
+          <td style="text-align: center;">{{producto.subtotal}}</td>
+          <td><button type="button" class="btn btn-danger" (click)="borrar(producto)"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+        </tr><hr>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+          <th scope="col">Total</th>
+          <th scope="col" style="text-align: center;">{{total}}</th>
+          <th scope="col"></th>
+        </tr>
+      </tbody>
+    </table>
+    <button type="button" class="btn btn-warning" (click)="crear_reserva()">Generar pedido</button>
+  </div>
+</div>
+
+<!-- Canvas Filtro -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+  <div class="offcanvas-header">
+    <h2 class="offcanvas-title" id="offcanvasExampleLabel">Filtros</h2>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div>
+      <h4>
+        Sucursal
+      </h4>
+    </div>
+    <div class="dropdown mt-3">
+      <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+        {{nombre_sucursal}} - {{ciudad}}
+      </button>
+      <ul class="dropdown-menu">
+        <li *ngFor="let sucursal of sucursales"><a class="dropdown-item" (click)="click_sucursales(sucursal)">{{sucursal.nombre_sucursal}} - {{sucursal.ciudad}}</a></li>
+      </ul>
+    </div><br>
+    <h3>Cuenta: {{cuenta}}</h3>
+    <h3>Dirección: <a href="{{direccion}}" target="_blank"><i class="fa fa-map-marker" aria-hidden="true"> Click para abrir el mapa</i></a></h3>
+    <br><hr>
+    <div>
+      <h4>
+        Talla
+      </h4>
+    </div>
+    <div class="dropdown mt-3">
+      <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+        {{talla}}
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" (click)="click_tallas('XS')">XS</a></li>
+        <li><a class="dropdown-item" (click)="click_tallas('S')">S</a></li>
+        <li><a class="dropdown-item" (click)="click_tallas('M')">M</a></li>
+        <li><a class="dropdown-item" (click)="click_tallas('L')">L</a></li>
+        <li><a class="dropdown-item" (click)="click_tallas('XL')">XL</a></li>
+        <li><a class="dropdown-item" (click)="click_tallas('UNICA')">Única</a></li>
+      </ul>
+    </div><br>
+    <hr>
+    <div>
+      <h4>
+        Nombre
+      </h4>
+    </div>
+    <input type="text" placeholder="Click enter para buscar" [(ngModel)]="buscador" name="buscador" (keyup.enter)="buscador_enter()"><br>
+  </div>
+</div>
+<img
+    class="absolute top-0 b-auto right-0 pt-16 sm:w-6/12 -mt-48 sm:mt-0 w-10/12 max-h-860-px"
+    src="assets/img/pattern_angular.png"
+    alt="..."
+  />
+
+<section class="mt-48 md:mt-40 pb-40 relative" style="background-color: rgb(247, 239, 170);">
+  <div
+    class="-mt-20 top-0 bottom-auto left-0 right-0 w-full absolute h-20"
+    style="transform: translateZ(0)"
+  >
+    <svg
+      class="absolute bottom-0 overflow-hidden"
+      xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio="none"
+      version="1.1"
+      viewBox="0 0 2560 100"
+      x="0"
+      y="0"
+    >
+      <polygon
+        class="text-blueGray-100 fill-current"
+        points="2560 0 2560 100 0 100"
+      ></polygon>
+    </svg>
+  </div>
+</section>
+
+<section class="pb-16 relative pt-32" style="background-color: rgb(247, 239, 170);">
+  <div class="container">
+    <div class="flex flex-wrap justify-center bg-white rounded-lg -mt-64 py-16 relative z-10">
+      <div class="w-full text-center lg:w-8/12">
+        <div>
+          <button class="btn btn-primary btn-sm izquierda" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+            <i class="fas fa-search"></i> Filtros
+          </button>
+          <button class="btn btn-primary btn-sm izquierda" type="button" (click)="consultar_productos()">
+            <i class="fa fa-eraser"></i> Borrar filtros
+          </button>
+          <h2>{{titulo1}}</h2>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="col col-1">Imágen</th>
+              <th class="col col-2">Stock</th>
+              <th class="col col-3">Nombre</th>
+              <th class="col col-4">Talla</th>
+              <th class="col col-5">Precio</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let producto of productos | slice:desde:hasta; let i = index" style="cursor: pointer;" (click)="consultar_imagenes(producto)" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              <td class="col col-1" data-label="Imágen"><img src="http://186.71.211.14:1023/api/api_disfraces/imagenes/{{producto.detalle}}" alt="{{producto.descripcion}}" style="height: 50px; width: 50px; display: inline-table; cursor: pointer;"></td>
+              <td class="col col-2" data-label="Stock" [ngClass]="{'resaltado': producto.stock == 0}">{{producto.stock}}</td>
+              <td class="col col-3" data-label="Nombre">{{producto.nombre}}</td>
+              <td class="col col-4" data-label="Talla">{{producto.talla}}</td>
+              <td class="col col-5" data-label="Precio">{{producto.precio_dia}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <mat-paginator [length]="numero"
+                      [pageSize]="paginas"
+                      [pageSizeOptions]="[5, 10, 25, 100]"
+                      (page)="cambiarPagina($event)">
+        </mat-paginator>
+        <div class="text-center mt-16"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pb-16 relative pt-1" style="background-color: rgb(247, 239, 170);">
+  <div id="comentarios">
+    <form>
+      <div class="comments-container">
+        <div class="row">
+          <div class="col-lg-5">
+            <label style="font-size: 25px;">Comentarios y sugerencias </label>
+          </div>
+          <div class="col-lg-7">
+            <a><img src="./assets/img/{{estrellas}}.png" alt="Calificación" style="height: 55px; width: 135px"></a>
+          </div>
+        </div><br>
+
+        <table class="table" style="border: 1px solid black; height:400px; width: 350px;">
+          <div style="height:400px; width: 350px; overflow:auto;">
+            <tr id="comments-list" class="comments-list" *ngFor="let detalle of detalles">
+              <td>
+                <div class="comment-main-level">
+                  <!-- Avatar -->
+                  <div class="comment-avatar"><img src="./assets/img/usuario.png" alt=""></div>
+                  <!-- Contenedor del Comentario -->
+                  <div class="comment-box">
+                    <div class="comment-head">
+                      <h6 class="comment-name by-author"><a>{{detalle.nombre}} {{detalle.apellido}}</a><i><img src="./assets/img/{{detalle.calificacion}}.png" alt="Calificación" style="height: 20px; width: 100px"></i></h6>
+
+                    </div>
+                    <div class="comment-content">
+                      {{detalle.comentario}}
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </div>
+        </table>
+
+        <div style="height:85px; width: 500px;">
+          <tr class="comments-list reply-list">
+            <td>
+              <!-- Avatar -->
+
+              <!-- Contenedor del Comentario -->
+              <div class="comment-box">
+                <div class="comment-head">
+                  <h6 class="comment-name"><a>{{nombre}} {{apellido}}</a></h6>
+                  <span>Nuevo comentario:</span>
+                  <i><button type="button" class="btn btn-primary btn-sm" (click)="validador_txt()">Guardar</button></i>
+                </div>
+                <div class="comment-content">
+                  <textarea id="textarea" name="textarea" rows="2" cols="27" maxlength="250" [(ngModel)]="textarea"></textarea>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="exampleModal5" tabindex="-1" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Recuperación de clave</h1>
+        <button type="button" #cModalClose class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <section>
+          <div class="container-fluid h-custom">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+              <div class="col-md-9 col-lg-6 col-xl-5">
+                <img src="https://www.sshxl.nl/frontend/images/floor-header/laptop.svg"
+                  class="img-fluid" alt="Sample image">
+              </div>
+              <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                <form>
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <input type="text" id="form3Example3" class="form-control form-control-lg"
+                      placeholder="Ingrese su nombre" [(ngModel)]="nombre" name="nombre" onkeydown="return /[áéíóúÁÉÍÓÚa-zA-Zñ]/i.test(event.key)">
+                    <label class="form-label" for="form3Example3">Nombre</label>
+                  </div>
+
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <input type="text" id="form3Example3" class="form-control form-control-lg"
+                      placeholder="Ingrese su apellido" [(ngModel)]="apellido" name="apellido" onkeydown="return /[áéíóúÁÉÍÓÚa-zA-Zñ]/i.test(event.key)">
+                    <label class="form-label" for="form3Example3">Apellido</label>
+                  </div>
+
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <input type="email" id="form3Example3" class="form-control form-control-lg"
+                      placeholder="Ingrese su cédula" [(ngModel)]="cedula" name="cedula" maxlength="10" onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;">
+                    <label class="form-label" for="form3Example3">Cédula</label>
+                  </div>
+
+                  <!-- Password input -->
+                  <div class="form-outline mb-3">
+                    <input type="password" id="form3Example4" class="form-control form-control-lg"
+                      placeholder="Ingrese su nueva clave" [(ngModel)]="clave" name="clave">
+                    <label class="form-label" for="form3Example4">Clave</label>
+                  </div>
+
+                  <div class="text-center text-lg-start mt-4 pt-2">
+                    <button type="button" class="btn btn-primary btn-lg"
+                      style="padding-left: 2.5rem; padding-right: 2.5rem;" (click)="recuperacion()">Guardar</button>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">{{titulo}}</h1>
+        <button type="button" #bModalClose class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active" data-bs-interval="5000" *ngFor="let imagen of imagenes_detalle">
+              <img src="http://186.71.211.14:1023/api/api_disfraces/imagenes/{{imagen.detalle}}" class="d-block w-100" alt="..." style="height: 300px; width: 100px">
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+        <br><hr>
+        <div>
+          <div class="only-pc">
+            <h3>Descripción:</h3>
+            <p>{{descripcion}}</p>
+          </div><div class="css-1w7o08v">
+          <div class="css-1b7fhda">
+            <strong>Nombre</strong><span>{{titulo}}</span>
+          </div>
+          <div class="css-1b7fhda"><strong>Precio por día</strong><span>{{precio_f}}</span>
+          </div>
+          <div class="css-1b7fhda"><strong>Talla</strong><span><select class="form-select" style="width: 150px; font-size: small;" aria-label="Default select example" name="select">
+            <option *ngFor="let imagen of imagenes" (click)="click_talla(imagen.talla)" value="{{imagen.talla}}">{{imagen.talla}}</option>
+          </select></span>
+          </div>
+          <div class="css-1b7fhda"><strong>Stock</strong><span>{{stock_f}}</span>
+          </div>
+        </div>
+      </div>
+
+      </div>
+      <div class="modal-footer">
+        <label>Cantidad:</label>
+        <div class="form" style="width: 75px;">
+          <input type="number" id="typeNumber" class="form-control" min="1" max="{{stock_f}}" (click)="validacion()" (keyup)="validacion()" [(ngModel)]="stock"/>
+        </div>
+        <button type="button" class="btn btn-primary" (click)="addNew()">Agregar al carrito</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="exampleModal1" tabindex="-1" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Login</h1>
+        <button type="button" #ModalClose class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <section>
+          <div class="container-fluid h-custom">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+              <div class="col-md-9 col-lg-6 col-xl-5">
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+                  class="img-fluid" alt="Sample image">
+              </div>
+              <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                <form>
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <input type="email" id="form3Example3" class="form-control form-control-lg"
+                      placeholder="Ingrese su cédula" [(ngModel)]="log_cedula" name="log_cedula">
+                    <label class="form-label" for="form3Example3">Cédula</label>
+                  </div>
+
+                  <!-- Password input -->
+                  <div class="form-outline mb-3">
+                    <input type="password" id="form3Example4" class="form-control form-control-lg"
+                      placeholder="Ingrese su clave" [(ngModel)]="log_clave" name="log_clave">
+                    <label class="form-label" for="form3Example4">Clave</label>
+                  </div>
+
+                  <div class="text-center text-lg-start mt-4 pt-2">
+                    <button type="button" class="btn btn-primary btn-lg"
+                      style="padding-left: 2.5rem; padding-right: 2.5rem;" (click)="login()">Ingresar</button>
+                    <p class="small fw-bold mt-2 pt-1 mb-0">No tiene cuenta? <a style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal2"
+                        class="link-danger">Registrarse</a>
+                    </p>
+                    <p class="small fw-bold mt-2 pt-1 mb-0">Recuperar su clave <a style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal5"
+                      class="link-danger">Click aquí</a>
+                    </p>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="exampleModal2" tabindex="-1" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Registro</h1>
+        <button type="button" #myModalClose class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <section>
+          <div class="container-fluid h-custom">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+              <div class="col-md-9 col-lg-6 col-xl-5">
+                <img src="https://www.sshxl.nl/frontend/images/floor-header/laptop.svg"
+                  class="img-fluid" alt="Sample image">
+              </div>
+              <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                <form>
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <input type="text" id="form3Example3" class="form-control form-control-lg"
+                      placeholder="Ingrese su nombre" [(ngModel)]="nombre" name="nombre" onkeydown="return /[áéíóúÁÉÍÓÚa-zA-Zñ]/i.test(event.key)">
+                    <label class="form-label" for="form3Example3">Nombre</label>
+                  </div>
+
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <input type="text" id="form3Example3" class="form-control form-control-lg"
+                      placeholder="Ingrese su apellido" [(ngModel)]="apellido" name="apellido" onkeydown="return /[áéíóúÁÉÍÓÚa-zA-Zñ]/i.test(event.key)">
+                    <label class="form-label" for="form3Example3">Apellido</label>
+                  </div>
+
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <input type="email" id="form3Example3" class="form-control form-control-lg"
+                      placeholder="Ingrese su cédula" [(ngModel)]="cedula" name="cedula" maxlength="10" onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;" (change)="validadorDeCedula(cedula)">
+                    <label class="form-label" for="form3Example3">Cédula</label>
+                  </div>
+
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <input type="email" id="form3Example3" class="form-control form-control-lg"
+                      placeholder="Ingrese su teléfono" [(ngModel)]="telefono" name="telefono" maxlength="10" onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;">
+                    <label class="form-label" for="form3Example3">Teléfono</label>
+                  </div>
+
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <input type="email" id="form3Example3" class="form-control form-control-lg"
+                      placeholder="Ingrese su dirección" [(ngModel)]="dir" name="dir">
+                    <label class="form-label" for="form3Example3">Dirección</label>
+                  </div>
+
+                  <!-- Password input -->
+                  <div class="form-outline mb-3">
+                    <input type="password" id="form3Example4" class="form-control form-control-lg"
+                      placeholder="Ingrese su clave" [(ngModel)]="clave" name="clave">
+                    <label class="form-label" for="form3Example4">Clave</label>
+                  </div>
+
+                  <div class="text-center text-lg-start mt-4 pt-2">
+                    <button type="button" class="btn btn-primary btn-lg"
+                      style="padding-left: 2.5rem; padding-right: 2.5rem;" (click)="registro_usuarios()">Guardar</button>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="exampleModal3" tabindex="-1" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Actualización de datos</h1>
+        <button type="button" #aModalClose class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <section>
+          <div class="container-fluid h-custom">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+              <div class="col-md-9 col-lg-6 col-xl-5">
+                <img src="https://www.sshxl.nl/frontend/images/floor-header/laptop.svg"
+                  class="img-fluid" alt="Sample image">
+              </div>
+              <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                <form>
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <input type="text" id="form3Example3" class="form-control form-control-lg"
+                      placeholder="Ingrese su nombre" [(ngModel)]="nombre" name="nombre" onkeydown="return /[áéíóúÁÉÍÓÚa-zA-Zñ]/i.test(event.key)">
+                    <label class="form-label" for="form3Example3">Nombre</label>
+                  </div>
+
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <input type="text" id="form3Example3" class="form-control form-control-lg"
+                      placeholder="Ingrese su apellido" [(ngModel)]="apellido" name="apellido" onkeydown="return /[áéíóúÁÉÍÓÚa-zA-Zñ]/i.test(event.key)">
+                    <label class="form-label" for="form3Example3">Apellido</label>
+                  </div>
+
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <input disabled type="email" id="form3Example3" class="form-control form-control-lg"
+                      placeholder="Ingrese su cédula" [(ngModel)]="cedula" name="cedula" maxlength="10" onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;">
+                    <label class="form-label" for="form3Example3">Cédula</label>
+                  </div>
+
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <input type="email" id="form3Example3" class="form-control form-control-lg"
+                      placeholder="Ingrese su teléfono" [(ngModel)]="telefono" name="telefono" maxlength="10" onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;">
+                    <label class="form-label" for="form3Example3">Teléfono</label>
+                  </div>
+
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <input type="email" id="form3Example3" class="form-control form-control-lg"
+                      placeholder="Ingrese su dirección" [(ngModel)]="dir" name="dir">
+                    <label class="form-label" for="form3Example3">Dirección</label>
+                  </div>
+
+                  <!-- Password input -->
+                  <div class="form-outline mb-3">
+                    <input type="password" id="form3Example4" class="form-control form-control-lg"
+                      placeholder="Ingrese su clave" [(ngModel)]="clave" name="clave">
+                    <label class="form-label" for="form3Example4">Clave</label>
+                  </div>
+
+                  <div class="text-center text-lg-start mt-4 pt-2">
+                    <button type="button" class="btn btn-primary btn-lg"
+                      style="padding-left: 2.5rem; padding-right: 2.5rem;" (click)="actualizar_usuario()">Guardar</button>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal4" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Mis pedidos</h1>
+        <button type="button" #dModalClose class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Total</th>
+              <th scope="col">Estado</th>
+              <th scope="col">C.P.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let reserva of reservas">
+              <th scope="row">{{reserva.id_reserva}}</th>
+              <td>{{reserva.fecha}}</td>
+              <td>{{reserva.total}}</td>
+              <td>{{reserva.estado}}</td>
+              <td [ngClass]="{ ocultar1: reserva.estado === 'finalizado', ocultar2: reserva.estado === 'cancelado', ocultar3: reserva.imagen != null, mostrar: reserva.estado === 'reenviar' }">
+                <label style="background-color: rgb(77, 146, 202);" class="custom-file-upload">
+                  <input type="file" (change)="get($event)" (change)="actualizar_imagen(reserva)"/>
+                  <i class="fa fa-upload"></i>
+                </label>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Button trigger modal -->
+<button type="button" #eModalOpen class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModale" style="display: none;">
+  Launch demo modal
+</button>
+<!-- Modal -->
+<div class="modal fade" id="exampleModale" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Elija su calificación</h1>
+        <button type="button" #eModalClose class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body btn-group hover08 column" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-outline-light" title="1 estrella" (click)="guardar_comentarios('1')"><img src="./assets/img/estrella.png" alt="" style="height: 50px; width: 50px"></button>
+        <button type="button" class="btn btn-outline-light" title="2 estrellas" (click)="guardar_comentarios('2')"><img src="./assets/img/estrella.png" alt="" style="height: 50px; width: 50px"></button>
+        <button type="button" class="btn btn-outline-light" title="3 estrellas" (click)="guardar_comentarios('3')"><img src="./assets/img/estrella.png" alt="" style="height: 50px; width: 50px"></button>
+        <button type="button" class="btn btn-outline-light" title="4 estrellas" (click)="guardar_comentarios('4')"><img src="./assets/img/estrella.png" alt="" style="height: 50px; width: 50px"></button>
+        <button type="button" class="btn btn-outline-light" title="5 estrellas" (click)="guardar_comentarios('5')"><img src="./assets/img/estrella.png" alt="" style="height: 50px; width: 50px"></button>
+      </div>
+    </div>
+  </div>
+</div>
